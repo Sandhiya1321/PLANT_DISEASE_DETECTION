@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title data-translate="title">Upload Leaf - Plant Leaf Disease Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .autocomplete-wrapper { position: relative; display: inline-block; width: 100%; }
+        .autocomplete-input {
+            width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd;
+            border-radius: 5px; font-size: 16px; box-sizing: border-box;
+        }
+        .autocomplete-input:focus { outline: none; border-color: #2E7D32; }
+        .autocomplete-dropdown {
+            position: absolute; top: 100%; left: 0; right: 0; background: white;
+            border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px;
+            max-height: 250px; overflow-y: auto; z-index: 1000; display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .autocomplete-item { padding: 15px; cursor: pointer; border-bottom: 1px solid #eee; transition: background 0.2s; }
+        .autocomplete-item:hover { background: #f0f8f0 !important; }
+        .autocomplete-item:last-child { border-bottom: none; }
+        .other-plant-input { display: none; margin-top: 10px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 2px dashed #ddd; }
+        .other-plant-input.active { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        #preview { max-width: 300px; height: auto; border-radius: 8px; display: none; margin: 15px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .navbar-right { display: flex; align-items: center; gap: 15px; }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <h3 id="navTitle" data-translate="title">🌿 Plant Leaf Disease Analyzer</h3>
+    <div class="navbar-right">
+        <span id="uploadUserWelcome" class="user-welcome">User</span>
+        <select id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="ta">தமிழ்</option>
+        </select>
+        <a href="login.html" onclick="logout()" data-translate="logoutBtn">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2 data-translate="uploadTitle">Upload Leaf Image for Analysis</h2>
+
+    <div class="autocomplete-wrapper">
+        <input type="text" class="autocomplete-input" id="plantName" placeholder="" autocomplete="off" data-translate-placeholder="plantPlaceholder">
+        <div class="autocomplete-dropdown" id="plantDropdown"></div>
+    </div>
+
+    <div class="other-plant-input" id="otherPlantInput">
+        <h4 data-translate="customTitle">🌿 Custom Plant Name</h4>
+        <input type="text" class="autocomplete-input" id="customPlantName" placeholder="" data-translate-placeholder="customPlaceholder">
+    </div>
+
+    <input type="file" id="image" accept="image/*" onchange="previewImage()">
+    <img id="preview">
+
+    <button onclick="uploadImage()" data-translate="analyzeBtn">🔬 Analyze Image</button>
+
+    <div id="loading" style="display: none;" data-translate="analyzing">🔄 Analyzing image... Please wait</div>
+
+    <div class="result-card" id="result" style="display: none;">
+        <h3 data-translate="resultTitle">✅ Analysis Complete!</h3>
+        <p><b data-translate="plantLabel">Plant :: </b> <span id="resPlant"></span></p>
+        <p><b data-translate="diseaseLabel">Disease :: </b> <span id="resDisease"></span></p>
+        <p><b data-translate="confidenceLabel">Confidence :: </b> <span id="resConfidence"></span>%</p>
+    </div>
+</div>
+
+<div class="navbar language-section">
+    <select id="languageSelectBottom" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="ta">தமிழ்</option>
+    </select>
+</div>
+
+<script src="script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const username = localStorage.getItem('username') || 'User';
+        document.getElementById('uploadUserWelcome').textContent = username;
+
+        if (!localStorage.getItem('loggedIn')) {
+            window.location.href = "login.html";
+        }
+    });
+</script>
+</body>
+</html>
